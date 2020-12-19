@@ -14,12 +14,14 @@ import com.stock.api.repository.StockRepository;
 @Service
 public class StockServiceImpl implements StockService {
 	
+	private Stock stock;
+	
 	@Autowired
 	private StockRepository stockRepository;
 
 	@Override
 	public Stock createStock(Stock stock) {
-		return stockRepository.save(stock);
+		return stockRepository.saveAndFlush(stock);
 	}
 
 	@Override
@@ -29,21 +31,35 @@ public class StockServiceImpl implements StockService {
 
 	@Override
 	public Stock readStockByName(String name) {
-		Optional<Stock> stock = stockRepository.findById(name);
-		if(!stock.isPresent()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Name not found");
-		}
+		return this.getStockById(name).get();
 		
-		return stock.get();
 	}
 
 	@Override
 	public void deleteStock(String name) {
-		Optional<Stock> stock = stockRepository.findById(name);
-		if(!stock.isPresent()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Name not found");
+		this.stock = this.getStockById(name).get();
+		stockRepository.deleteById(this.stock.getName());
+	}
+
+	@Override
+	public Stock updateStock(String name, List<Float> quotes) {
+		this.stock = this.getStockById(name).get();
+		List<Float> stockList = this.stock.getQuotes();
+	
+		quotes.forEach(quotesValue -> stockList.add(quotesValue));
+		this.stock.setQuotes(stockList);
+		return stockRepository.save(this.stock);
+	}
+	
+	
+	private Optional<Stock> getStockById(String name)
+	{
+		Optional<Stock> returnedStock = stockRepository.findById(name);
+		if(!returnedStock.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Stock name not exists");
 		}
-		stockRepository.deleteById(name);
+		
+		return returnedStock;
 	}
 
 
