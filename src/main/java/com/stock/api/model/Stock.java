@@ -37,11 +37,11 @@ public class Stock {
 	public List<Float> getQuotes() {
 		return quotes;
 	}
-
+	
 	public void setQuotes(List<Float> quotes) {
 		this.quotes = quotes;
 	}
-	
+		
 	@Override
 	public int hashCode() {
 		final int prime = 31;

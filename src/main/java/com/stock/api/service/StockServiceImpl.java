@@ -3,6 +3,7 @@ package com.stock.api.service;
 import java.util.List;
 import java.util.Optional;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -28,11 +29,9 @@ public class StockServiceImpl implements StockService {
 	public List<Stock> readAllStocks() {
 		return stockRepository.findAll();
 	}
-
-	@Override
-	public Stock readStockByName(String name) {
-		return this.getStockById(name).get();
-		
+	
+	public Stock readAllStocks(String name) {
+		return stockRepository.findById(name).get();
 	}
 
 	@Override
@@ -42,15 +41,13 @@ public class StockServiceImpl implements StockService {
 	}
 
 	@Override
-	public Stock updateStock(String name, List<Float> quotes) {
+	public Stock updateStock(String name, Stock stockPartialUpdate) {
 		this.stock = this.getStockById(name).get();
-		List<Float> stockList = this.stock.getQuotes();
-	
-		quotes.forEach(quotesValue -> stockList.add(quotesValue));
-		this.stock.setQuotes(stockList);
+		List<Float> stockQuotes = this.stock.getQuotes();
+		stockQuotes.addAll(stockPartialUpdate.getQuotes());
+		this.stock.setQuotes(stockQuotes);
 		return stockRepository.save(this.stock);
 	}
-	
 	
 	private Optional<Stock> getStockById(String name)
 	{

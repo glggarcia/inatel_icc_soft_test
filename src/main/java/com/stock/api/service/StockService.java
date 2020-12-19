@@ -9,10 +9,8 @@ public interface StockService {
 	Stock createStock(Stock stock);
 
 	List<Stock> readAllStocks();
-
-	Stock readStockByName(String name);
 	
-	Stock updateStock(String name, List<Float> quotes);
+	Stock updateStock(String name, Stock stockPartialUpdate);
 
 	void deleteStock(String name);
 }
