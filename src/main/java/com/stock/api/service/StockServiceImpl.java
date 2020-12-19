@@ -33,7 +33,7 @@ public class StockServiceImpl implements StockService {
 
 	@Override
 	public ResponseEntity<?> readOneStock(String name) {
-		return ResponseEntity.ok().body(stockRepository.findById(name));
+		return ResponseEntity.ok().body(this.getStockById(name.toUpperCase()).get());
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class StockServiceImpl implements StockService {
 		name = name.toUpperCase();
 		Optional<Stock> returnedStock = stockRepository.findById(name);
 		if (!returnedStock.isPresent()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Stock name not exists");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no Stock with that name");
 		}
 
 		return returnedStock;
